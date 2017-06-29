@@ -96,3 +96,23 @@ class Pretreat(object):
             result.append(wfResult)
 
         return np.array(result)
+
+
+class CutST(object):
+
+    def __init__(self, lead):
+        self.__lead = lead
+    
+
+    def process(self):
+        #smooth window when sfreq = 500
+        WW, p = 100, 8
+        #threshold for recognizing R wave
+        thresd = 0.65
+        leadLen = lead.size
+        max_h = max(lead[round(leadLen/4):round(3*leadLen/4)])
+        rExistArea = self.__lead >= max_h
+        rLeft = np.diff(np.hstack([0, rExistArea*1])) == 1
+        rRight = np.diff(np.hstack([rExistArea*1, 0])) == -1
+        left = self.__lead[rLeft]
+        right = self.__lead[rRight]
