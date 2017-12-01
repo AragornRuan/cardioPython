@@ -273,15 +273,12 @@ class Learn(object):
         self.__stt = (self.__stt / sttMax) * self.__norLev
         S = np.zeros((M, nRows))
         for i in range(nRows):
-            xyz1 = np.zeros(3)
-            xyz2 = np.zeros(3)
-            mpq = np.zeros(3)
             s = np.zeros((M, 1))
             for m in range(-self.__u, self.__u):
                 for p in range(-self.__u, self.__u):
                     for q in range(-self.__u, self.__u):
                         xyz1 = np.floor((A-self.__stt[i])/self.__width) + A * 0.5
-                        mpq[0],mpq[1],mpq[2] = m,p,q
+                        mpq = np.array([m, p, q])
                         xyz2 = xyz1 + mpq
                         xyz2[xyz2 < 1] = 1
                         xyz2[xyz2 > numCent] = numCent
@@ -333,18 +330,18 @@ class Learn(object):
             xHat[0] = xHat[1]
             xHat[1] = xHat[2]
             xHat[2] = 0
-
             if i >= nRowsRepeat - 301:
                 W13 = W12 + W13
                 W23 = W22 + W23
                 W33 = W32 + W33
-            W = np.zeros((3, M))
-            W[0] = np.transpose(W13)
-            W[1] = np.transpose(W23)
-            W[2] = np.transpose(W33)
 
-            WS = W * S / 300
-            return WS
+        W = np.zeros((3, M))
+        W[0] = np.transpose(W13)
+        W[1] = np.transpose(W23)
+        W[2] = np.transpose(W33)
+
+        WS = W * S / 300
+        return WS
 
 
 if __name__ == '__main__':
@@ -352,12 +349,17 @@ if __name__ == '__main__':
     ecg = ecg.transpose()
     pretreat = Pretreat(ecg)
     ecgAndVcg = pretreat.process()
+    print("Pretreat finished.")
     cutST = CutST(ecgAndVcg[12])
     J, K, LJ = cutST.cut()
+    print("Cut ST-T finished.")
     mergeSTT = MergeSTT(ecgAndVcg[12:15], J, K, LJ)
     stt = mergeSTT.merge()
+    print("Merge ST-T finished.")
     learn = Learn(stt.transpose())
+    print("Start to learning.")
     WS = learn.learn()
+    print("Learn finished.")
 
     print(WS)
     fig = plt.figure()
