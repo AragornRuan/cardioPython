@@ -256,14 +256,15 @@ class Learn(object):
         M = int(pow(numCent, 3))
         cent = np.zeros((M, 3))
         A = np.ones(3)
-        ijk = np.zeros(3)
+        # ijk = np.zeros(3)
         for i in range(1, numCent+1):
             for j in range(1, numCent+1):
                 for k in range(1, numCent+1):
                     xRow = int((i - 1) * pow(numCent, 2) + (j - 1) * numCent + k - 1)
-                    ijk[0] = i
-                    ijk[1] = j
-                    ijk[2] = k
+                    # ijk[0] = i
+                    # ijk[1] = j
+                    # ijk[2] = k
+                    ijk = np.array([i, j, k])
                     cent[xRow,:] = A - (ijk - 1) * self.__width
         xNorm = np.zeros(nRows)
         for i in range(nRows):
@@ -326,9 +327,9 @@ class Learn(object):
                 W12 = W11 - alpha * lamb * (xHat[1,0] - self.__stt[ii,0] - a * (xHat[0,0] - self.__stt[iif,0])) * S[:,iif] / den
                 W22 = W21 - alpha * lamb * (xHat[1,1] - self.__stt[ii,1] - a * (xHat[0,1] - self.__stt[iif,1])) * S[:,iif] / den
                 W32 = W31 - alpha * lamb * (xHat[1,2] - self.__stt[ii,2] - a * (xHat[0,2] - self.__stt[iif,2])) * S[:,iif] / den
-            xHat[2,0] = self.__stt[ii,0] + a * (xHat[1,0] - self.__stt[ii,0]) + TS * np.dot(np.transpose(W12), S[:,ii])
-            xHat[2,1] = self.__stt[ii,1] + a * (xHat[1,1] - self.__stt[ii,1]) + TS * np.dot(np.transpose(W22), S[:,ii])
-            xHat[2,2] = self.__stt[ii,2] + a * (xHat[1,2] - self.__stt[ii,2]) + TS * np.dot(np.transpose(W32), S[:,ii])
+            xHat[2,0] = self.__stt[ii,0] + a * (xHat[1,0] - self.__stt[ii,0]) + TS * np.asscalar(np.dot(S[:,ii], W12))
+            xHat[2,1] = self.__stt[ii,1] + a * (xHat[1,1] - self.__stt[ii,1]) + TS * np.asscalar(np.dot(S[:,ii], W22))
+            xHat[2,2] = self.__stt[ii,2] + a * (xHat[1,2] - self.__stt[ii,2]) + TS * np.asscalar(np.dot(S[:,ii], W32))
             xHat[0] = xHat[1]
             xHat[1] = xHat[2]
             xHat[2] = 0
