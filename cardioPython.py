@@ -334,6 +334,8 @@ class Learn(object):
                 W13 = W12 + W13
                 W23 = W22 + W23
                 W33 = W32 + W33
+            if i % 10000 == 0:
+                print(i)
 
         W = np.zeros((3, M))
         W[0] = np.transpose(W13)
