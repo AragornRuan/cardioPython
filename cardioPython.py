@@ -148,7 +148,7 @@ class CutST(object):
         #每两个R波尖峰的差值
         rIntval = np.zeros(rr-1)
         for i in range(1, len(rIndex)):
-            rInt = rIndex[i] -  rIndex[i-1]
+            rInt = rIndex[i] - rIndex[i-1]
             rIntval[i-1] = rInt
             if rInt < math.ceil(220 * self.__sfrep / 250):
                 ka[i-1] = rIndex[i-1] + math.floor(0.5*math.sqrt(rInt)+20*self.__sfrep/250)
@@ -322,13 +322,13 @@ class Learn(object):
             if ii == 1:
                 iif  = nRows - 1
             if (np.linalg.norm(self.__stt[ii] - self.__stt[iif]) <= p2p_30):
-                den = 1 + np.asscalar(lamb * np.transpose(S[:,iif]) * S[:,iif])
+                den = 1 + lamb * np.dot(np.transpose(S[:,iif]), S[:,iif])
                 W12 = W11 - alpha * lamb * (xHat[1,0] - self.__stt[ii,0] - a * (xHat[0,0] - self.__stt[iif,0])) * S[:,iif] / den
                 W22 = W21 - alpha * lamb * (xHat[1,1] - self.__stt[ii,1] - a * (xHat[0,1] - self.__stt[iif,1])) * S[:,iif] / den
                 W32 = W31 - alpha * lamb * (xHat[1,2] - self.__stt[ii,2] - a * (xHat[0,2] - self.__stt[iif,2])) * S[:,iif] / den
-            xHat[2,0] = self.__stt[ii,0] + a * (xHat[1,0] - self.__stt[ii,0]) + np.asscalar(TS * np.transpose(W12) * S[:,ii])
-            xHat[2,1] = self.__stt[ii,1] + a * (xHat[1,1] - self.__stt[ii,1]) + np.asscalar(TS * np.transpose(W22) * S[:,ii])
-            xHat[2,2] = self.__stt[ii,2] + a * (xHat[1,2] - self.__stt[ii,2]) + np.asscalar(TS * np.transpose(W32) * S[:,ii])
+            xHat[2,0] = self.__stt[ii,0] + a * (xHat[1,0] - self.__stt[ii,0]) + TS * np.dot(np.transpose(W12), S[:,ii])
+            xHat[2,1] = self.__stt[ii,1] + a * (xHat[1,1] - self.__stt[ii,1]) + TS * np.dot(np.transpose(W22), S[:,ii])
+            xHat[2,2] = self.__stt[ii,2] + a * (xHat[1,2] - self.__stt[ii,2]) + TS * np.dot(np.transpose(W32), S[:,ii])
             xHat[0] = xHat[1]
             xHat[1] = xHat[2]
             xHat[2] = 0
